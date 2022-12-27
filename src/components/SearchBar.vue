@@ -1,12 +1,31 @@
 <template>
   <div class="wrap">
-    <input type="text" aria-label="1">
-    <button>搜尋</button>
+    <input type="text" aria-label="1" v-model="inputName" placeholder="輸入使用者名稱">
+    <button @click="searchUser">搜尋</button>
   </div>
 </template>
 
 <script>
+// https://api.github.com/search/users?q=xxx
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
+  setup() {
+    const store = useStore();
+    const inputName = ref('');
+    const searchUser = () => {
+      console.log(123);
+      fetch(`https://api.github.com/search/users?q=${inputName.value}`)
+        .then((res) => res.json())
+        .then((res) => {
+          store.commit('writeUserData', res.items);
+        })
+        .catch((err) => console.log(err));
+    };
+
+    return { inputName, searchUser };
+  },
 
 };
 </script>
